@@ -1,9 +1,10 @@
 #sample code using the PyQt5 framework to play an MP3 file:
-
+import spotipy
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow, QSlider, QAction
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from spotipy.oauth2 import SpotifyClientCredentials
 
 class MusicPlayer(QMainWindow):
     def __init__(self):
@@ -47,3 +48,24 @@ if __name__ == '__main__':
     player = MusicPlayer()
     player.show()
     sys.exit(app.exec_())
+
+
+#fetching musics online
+#scope = "user-library-read"
+
+#sp = spotipy.Spotify(auth_manager=SpotifyOAuth(scope=scope))
+#results = sp.current_user_saved_tracks()
+
+
+spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
+
+if len(sys.argv) > 1:
+    name = ' '.join(sys.argv[1:])
+else:
+    name = 'Radiohead'
+
+results = spotify.search(q='artist:' + name, type='artist')
+items = results['artists']['items']
+if len(items) > 0:
+    artist = items[0]
+    print(artist['name'], artist['images'][0]['url'])
